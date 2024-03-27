@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -221,7 +223,7 @@ fun MyApp(initialNotes: List<Note>) {
 
             if (isAddDialogOpen) {
                 // Dialog to add a new note
-                Dialog(
+                AlertDialog(
                     onDismissRequest = { isAddDialogOpen = false },
                     properties = DialogProperties(dismissOnBackPress = true)
                 ) {
@@ -256,7 +258,7 @@ fun MyApp(initialNotes: List<Note>) {
             }
 
             if (isEditDialogOpen) {
-                Dialog(
+                AlertDialog(
                     onDismissRequest = { isEditDialogOpen = false },
                     properties = DialogProperties(dismissOnBackPress = true)
                 ) {
@@ -298,9 +300,10 @@ fun MyApp(initialNotes: List<Note>) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                            .wrapContentHeight()
+                            .padding(20.dp)
+                            .background(color = Color(0xFFFFFFFF)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+
                     ) {
                         Text("Are you sure you want to delete this note?")
                         Row(

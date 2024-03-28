@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,8 +30,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.rosebakeryapp.ui.theme.RoseBakeryAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,22 +46,29 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RoseBakeryAppTheme {
-                // A surface container using the 'background' color from the theme
                 val salmonPink = colorResource(id = R.color.salmon_pink)
+                val navController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = salmonPink
                 ) {
-                    MainScreen(salmonPink)
+                    NavHost(navController = navController, startDestination = "main") {
+                        composable("main") { MainScreen(navController) }
+                        composable("newRecipe") { NewRecipeScreen() }
+                        composable("shoppingList") { ShoppingListScreen() }
+                        composable("timer") { TimerScreen() }
+                    }
                 }
             }
+
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(salmonPink: Color) {
+fun MainScreen(navController: NavController? = null) {
+    val salmonPink = colorResource(id = R.color.salmon_pink)
     Scaffold(
         topBar = {
             RoseTopAppBar()
@@ -68,40 +83,46 @@ fun MainScreen(salmonPink: Color) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { /* TODO: Navigate to My Recipe */ },
+                onClick = { navController?.navigate("newRecipe") },
                 colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(vertical = 8.dp)
             ) {
-                Text("My Recipe")
+                Text("My Recipe",
+                    fontFamily = FontFamily.Serif
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /* TODO: Navigate to Shopping List */ },
+                onClick = { navController?.navigate("shoppingList") },
                 colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(vertical = 8.dp)
             ) {
-                Text("Shopping List")
+                Text("Shopping List",
+                    fontFamily = FontFamily.Serif
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /* TODO: Navigate to Timer */ },
+                onClick = { navController?.navigate("timer") },
                 colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(vertical = 8.dp)
             ) {
-                Text("Timer")
+                Text("Timer",
+                    fontFamily = FontFamily.Serif
+                    )
             }
         }
     }
@@ -110,6 +131,7 @@ fun MainScreen(salmonPink: Color) {
 @Composable
 fun RoseTopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
+
 
         title = {
             Row(
@@ -124,7 +146,9 @@ fun RoseTopAppBar(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = stringResource(id = R.string.top_bar),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Cursive
                 )
             }
         },
@@ -136,7 +160,6 @@ fun RoseTopAppBar(modifier: Modifier = Modifier) {
 @Composable
 fun MainScreenPreview() {
     RoseBakeryAppTheme {
-        val salmonPink = MaterialTheme.colorScheme.secondary
-        MainScreen(salmonPink)
+        MainScreen()
     }
 }

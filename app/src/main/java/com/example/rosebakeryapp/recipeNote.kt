@@ -44,7 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.Dialog
+
 
 class RecipeNote : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

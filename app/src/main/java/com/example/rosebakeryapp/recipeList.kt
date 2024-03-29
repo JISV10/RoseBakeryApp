@@ -1,5 +1,6 @@
 package com.example.rosebakeryapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,6 +44,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 class RecipeList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +56,13 @@ class RecipeList : ComponentActivity() {
                 Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
                 Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond))
             )
+            val navController = rememberNavController()
             MainAppRecipes(
                 recipes,
                 onAddRecipe = { title, description -> /* code to add recipe */ },
                 onDeleteRecipeClick = { id -> /* code to delete recipe */ },
-                onEditRecipeClick = { recipe -> /* code to edit recipe */ }
+                onEditRecipeClick = { recipe -> /* code to edit recipe */ },
+                navController = navController
             )
         }
     }
@@ -242,12 +247,14 @@ fun DeleteRecipeDialog(
     )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MyAppRecipes(
     recipes: List<Recipe>,
     onAddRecipe: (String, String) -> Unit,
     onDeleteRecipeClick: (String) -> Unit,
-    onEditRecipeClick: (Recipe) -> Unit
+    onEditRecipeClick: (Recipe) -> Unit,
+    navController: NavController
 ) {
     var isAddDialogOpen by remember { mutableStateOf(false) }
     var isEditDialogOpen by remember { mutableStateOf(false) }
@@ -260,8 +267,11 @@ fun MyAppRecipes(
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
                 title = { Text("My Recipes") },
+
                 actions = {
-                    IconButton(onClick = { isAddDialogOpen = true }) {
+                    IconButton(onClick = {
+                        navController.navigate("newRecipe")
+                    }) {
                         Icon(Icons.Default.Add, contentDescription = "Add Recipe")
                     }
                 }
@@ -320,18 +330,19 @@ fun MainAppRecipes(
     recipes: List<Recipe>,
     onAddRecipe: (String, String) -> Unit,
     onDeleteRecipeClick: (String) -> Unit,
-    onEditRecipeClick: (Recipe) -> Unit
+    onEditRecipeClick: (Recipe) -> Unit,
+    navController: NavController
 ) {
     MaterialTheme {
         MyAppRecipes(
             recipes,
             onAddRecipe,
             onDeleteRecipeClick,
-            onEditRecipeClick
+            onEditRecipeClick,
+            navController = navController
         )
     }
 }
-
 @Preview
 @Composable
 fun PreviewRecipeList() {
@@ -341,10 +352,12 @@ fun PreviewRecipeList() {
         Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
         Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond))
     )
-    MainAppRecipes(
+    val navController = rememberNavController()
+    MyAppRecipes(
         recipes,
-        onAddRecipe = { title, description -> /* code to add recipe */ },
-        onDeleteRecipeClick = { id -> /* code to delete recipe */ },
-        onEditRecipeClick = { recipe -> /* code to edit recipe */ }
+        onAddRecipe = { _, _ -> },
+        onDeleteRecipeClick = { _ -> },
+        onEditRecipeClick = { _ -> },
+        navController = navController
     )
 }

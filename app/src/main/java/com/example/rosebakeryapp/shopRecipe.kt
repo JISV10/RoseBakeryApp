@@ -4,6 +4,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,30 +26,49 @@ val brownieIngredients = listOf(
 
 @Composable
 fun ShopARecipe() {
-    LazyColumn(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items(brownieIngredients) { ingredient ->
-            IngredientCard(ingredientName = ingredient.first, quantity = ingredient.second)
+    Scaffold(
+        topBar = {
+            RoseTopAppBar()
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(brownieIngredients) { ingredient ->
+                IngredientCard(ingredientName = ingredient.first, quantity = ingredient.second)
+            }
         }
     }
 }
 
 @Composable
 fun IngredientCard(ingredientName: String, quantity: String) {
+    val checkedState = rememberSaveable { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = ingredientName, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = quantity, style = MaterialTheme.typography.bodyMedium)
+            Checkbox(checked = checkedState.value,
+                onCheckedChange = { checkedState.value = it}
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(text = ingredientName, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = quantity, style = MaterialTheme.typography.bodyMedium)
+            }
         }
     }
 }

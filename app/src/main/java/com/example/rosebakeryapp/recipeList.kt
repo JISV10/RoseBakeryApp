@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 class RecipeList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,10 +62,9 @@ class RecipeList : ComponentActivity() {
                 Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
                 Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond))
             )
-            val navController = rememberNavController()
-            MainAppRecipes(
+            val navController = rememberNavController() as NavHostController
+            MyAppRecipes(
                 recipes,
-                onAddRecipe = { title, description -> /* code to add recipe */ },
                 onDeleteRecipeClick = { id -> /* code to delete recipe */ },
                 onEditRecipeClick = { recipe -> /* code to edit recipe */ },
                 navController = navController
@@ -67,6 +72,7 @@ class RecipeList : ComponentActivity() {
         }
     }
 }
+// Rest of the code remains the same
 
 data class Recipe(val id: String, val title: String, val description: String, val image: Painter)
 
@@ -74,13 +80,15 @@ data class Recipe(val id: String, val title: String, val description: String, va
 fun RecipeItem(
     recipe: Recipe,
     onDeleteClick: (String) -> Unit,
-    onEditClick: (Recipe) -> Unit
+    onEditClick: (Recipe) -> Unit,
+    onItemClick: (String) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-    ) {
+            .clickable { onItemClick(recipe.id) } // Navigate to detail screen
+        ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
@@ -131,7 +139,8 @@ fun RecipeItem(
 fun RecipeList(
     recipes: List<Recipe>,
     onDeleteRecipeClick: (String) -> Unit,
-    onEditRecipeClick: (Recipe) -> Unit
+    onEditRecipeClick: (Recipe) -> Unit,
+    navController: NavHostController
 ) {
     Column {
         Spacer(modifier = Modifier.height(56.dp))
@@ -140,50 +149,14 @@ fun RecipeList(
                 RecipeItem(
                     recipe = recipe,
                     onDeleteClick = onDeleteRecipeClick,
-                    onEditClick = onEditRecipeClick
+                    onEditClick = onEditRecipeClick,
+                    onItemClick = { selectedRecipeId ->
+                        navController.navigate("recipeDetail/$selectedRecipeId")
+                    }
                 )
             }
         }
     }
-}
-
-
-@Composable
-fun AddRecipeDialog(
-    onAddRecipe: (String, String) -> Unit,
-    onCancel: () -> Unit
-) {
-    var newRecipeTitle by remember { mutableStateOf("") }
-    var newRecipeDescription by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onCancel,
-        title = { Text("Add Recipe") },
-        text = {
-            Column {
-                TextField(
-                    value = newRecipeTitle,
-                    onValueChange = { newRecipeTitle = it },
-                    label = { Text("Title") }
-                )
-                TextField(
-                    value = newRecipeDescription,
-                    onValueChange = { newRecipeDescription = it },
-                    label = { Text("Description") }
-                )
-            }
-        },
-        confirmButton = {
-            Button(onClick = { onAddRecipe(newRecipeTitle, newRecipeDescription) }) {
-                Text("Add")
-            }
-        },
-        dismissButton = {
-            Button(onClick = onCancel) {
-                Text("Cancel")
-            }
-        }
-    )
 }
 
 @Composable
@@ -247,16 +220,15 @@ fun DeleteRecipeDialog(
     )
 }
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MyAppRecipes(
     recipes: List<Recipe>,
-    onAddRecipe: (String, String) -> Unit,
     onDeleteRecipeClick: (String) -> Unit,
     onEditRecipeClick: (Recipe) -> Unit,
-    navController: NavController
+    navController: NavHostController
 ) {
-    var isAddDialogOpen by remember { mutableStateOf(false) }
     var isEditDialogOpen by remember { mutableStateOf(false) }
     var isDeleteDialogOpen by remember { mutableStateOf(false) }
     var recipeToDelete: String by remember { mutableStateOf("") }
@@ -267,59 +239,72 @@ fun MyAppRecipes(
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
                 title = { Text("My Recipes") },
-
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate("newRecipe")
-                    }) {
+                    IconButton(onClick = { navController.navigate("newRecipe") }) {
                         Icon(Icons.Default.Add, contentDescription = "Add Recipe")
                     }
                 }
             )
         }
     ) {
-        Column {
-            RecipeList(
-                recipes = recipes,
-                onDeleteRecipeClick = { id ->
-                    recipeToDelete = id
-                    isDeleteDialogOpen = true
-                },
-                onEditRecipeClick = { recipe ->
-                    recipeToEdit = recipe
-                    isEditDialogOpen = true
+        NavHost(navController, startDestination = "recipeList") {
+            composable("newRecipe") {
+                // Reset variables when navigating to newRecipe destination
+                isEditDialogOpen = false
+                isDeleteDialogOpen = false
+                recipeToEdit = null
+                recipeToDelete = ""
+                NewRecipeScreen()
+            }
+            composable("recipeList") {
+                Column {
+                    RecipeList(
+                        recipes = recipes,
+                        onDeleteRecipeClick = { recipeId ->
+                            recipeToDelete = recipeId
+                            isDeleteDialogOpen = true
+                        },
+                        onEditRecipeClick = { recipe ->
+                            recipeToEdit = recipe
+                            isEditDialogOpen = true
+                        },
+                        navController = navController
+                    )
+
+                    recipeToEdit?.let { recipe ->
+                        EditRecipeDialog(
+                            recipe = recipe,
+                            onEditRecipeSave = { title, description ->
+                                onEditRecipeClick(
+                                    recipe.copy(
+                                        title = title,
+                                        description = description
+                                    )
+                                )
+                                isEditDialogOpen = false
+                            },
+                            onCancel = { isEditDialogOpen = false }
+                        )
+                    }
+
+                    if (isDeleteDialogOpen) {
+                        DeleteRecipeDialog(
+                            onConfirmDelete = {
+                                onDeleteRecipeClick(recipeToDelete)
+                                isDeleteDialogOpen = false
+                            },
+                            onCancel = { isDeleteDialogOpen = false }
+                        )
+                    }
                 }
-            )
-
-            if (isAddDialogOpen) {
-                AddRecipeDialog(
-                    onAddRecipe = { title, description ->
-                        onAddRecipe(title, description)
-                        isAddDialogOpen = false
-                    },
-                    onCancel = { isAddDialogOpen = false }
-                )
             }
-
-            recipeToEdit?.let { recipe ->
-                EditRecipeDialog(
-                    recipe = recipe,
-                    onEditRecipeSave = { title, description ->
-                        onEditRecipeClick(recipe.copy(title = title, description = description))
-                        isEditDialogOpen = false
-                    },
-                    onCancel = { isEditDialogOpen = false }
-                )
-            }
-
-            if (isDeleteDialogOpen) {
-                DeleteRecipeDialog(
-                    onConfirmDelete = {
-                        onDeleteRecipeClick(recipeToDelete)
-                        isDeleteDialogOpen = false
-                    },
-                    onCancel = { isDeleteDialogOpen = false }
-                )
+            composable(
+                route = "recipeDetail/{recipeId}",
+                arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val recipeId = backStackEntry.arguments?.getString("recipeId")
+                val selectedRecipe = recipes.find { it.id == recipeId }
+                selectedRecipe?.let { selectedRecipe?.let { /* Call to RecipeDetailScreen or equivalent function or class */ } }
             }
         }
     }
@@ -328,15 +313,15 @@ fun MyAppRecipes(
 @Composable
 fun MainAppRecipes(
     recipes: List<Recipe>,
-    onAddRecipe: (String, String) -> Unit,
     onDeleteRecipeClick: (String) -> Unit,
     onEditRecipeClick: (Recipe) -> Unit,
     navController: NavController
 ) {
+    val navController = rememberNavController() as NavHostController
+
     MaterialTheme {
         MyAppRecipes(
             recipes,
-            onAddRecipe,
             onDeleteRecipeClick,
             onEditRecipeClick,
             navController = navController
@@ -349,15 +334,14 @@ fun PreviewRecipeList() {
     val recipes = listOf(
         Recipe("1", "Brownie", "Description of recipe 1", painterResource(id = R.drawable.brownie)),
         Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
-        Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
         Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond))
     )
     val navController = rememberNavController()
     MyAppRecipes(
         recipes,
-        onAddRecipe = { _, _ -> },
         onDeleteRecipeClick = { _ -> },
         onEditRecipeClick = { _ -> },
         navController = navController
     )
 }
+

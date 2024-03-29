@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "main") {
                         composable("main") { MainScreen(navController) }
                         composable("newRecipe") { NewRecipeScreen() }
-                        composable("shoppingList") { NewShoppingList() }
+                        composable("shoppingList") { ShopARecipe() }
                         composable("timer") { TimerScreen() }
                     }
                 }

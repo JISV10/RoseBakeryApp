@@ -58,9 +58,9 @@ class RecipeList : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val recipes = listOf(
-                Recipe("1", "Brownie", "Description of recipe 1", painterResource(id = R.drawable.brownie)),
-                Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
-                Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond))
+                Recipe("1", "Brownie", "Description of recipe 1", painterResource(id = R.drawable.brownie), ""),
+                Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake), ""),
+                Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond), "")
             )
             val navController = rememberNavController() as NavHostController
             MyAppRecipes(
@@ -74,7 +74,9 @@ class RecipeList : ComponentActivity() {
 }
 // Rest of the code remains the same
 
-data class Recipe(val id: String, val title: String, val description: String, val image: Painter)
+data class Recipe(val id: String, val title: String, val description: String, val image: Painter, val ingredients: String) {
+
+}
 
 @Composable
 fun RecipeItem(
@@ -332,9 +334,9 @@ fun MainAppRecipes(
 @Composable
 fun PreviewRecipeList() {
     val recipes = listOf(
-        Recipe("1", "Brownie", "Description of recipe 1", painterResource(id = R.drawable.brownie)),
-        Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake)),
-        Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond))
+        Recipe("1", "Brownie", "Description of recipe 1", painterResource(id = R.drawable.brownie), ""),
+        Recipe("2", "Carrot Cake", "Description of recipe 2", painterResource(id = R.drawable.carrot_cake), ""),
+        Recipe("3", "Sweet Almond", "Description of recipe 3", painterResource(id = R.drawable.sweet_almond), "")
     )
     val navController = rememberNavController()
     MyAppRecipes(

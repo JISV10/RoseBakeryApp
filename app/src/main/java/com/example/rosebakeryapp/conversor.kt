@@ -1,131 +1,119 @@
 package com.example.rosebakeryapp
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rosebakeryapp.ui.theme.RoseBakeryAppTheme
 
-
-class ConversionActivity : ComponentActivity() {
+class ConversorActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            RoseBakeryAppTheme {
-                // A surface container using the 'background' color from the theme
-                ConversionScreen()
-            }
+            ConversionScreen()
         }
     }
 }
 
 @Composable
 fun ConversionScreen() {
-    var weightInput by remember { mutableStateOf(TextFieldValue("3.00")) }
-    var volumeInput by remember { mutableStateOf(TextFieldValue("0.00")) }
-    val weightOutput by remember { mutableStateOf("6.61387") }
-    var volumeOutput by remember { mutableStateOf("") }
+    val salmonPink = colorResource(id = R.color.salmon_pink)
+    var inputValue by remember { mutableStateOf("") }
+    var selectedConversion by remember { mutableStateOf("") }
+    var result by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        ConversionField(
-            label = "KG",
-            textFieldValue = weightInput,
-            onValueChange = { weightInput = it }
-        )
-        Spacer(Modifier.height(8.dp))
-        Button(
-            onClick = {
-                volumeOutput = convertLiterToGallon(volumeInput.text.toDoubleOrNull() ?: 0.0)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA07A))
-        ) {
-            Text("Convert")
-        }
-        Spacer(Modifier.height(8.dp))
-        ConversionField(
-            label = "LB",
-            textFieldValue = TextFieldValue(weightOutput),
-            onValueChange = {},
-            readOnly = true
-        )
-        Spacer(Modifier.height(24.dp))
-        ConversionField(
-            label = "Liter",
-            textFieldValue = volumeInput,
-            onValueChange = { volumeInput = it }
-        )
-        Spacer(Modifier.height(8.dp))
-        Button(
-            onClick = {
-                volumeOutput = convertLiterToGallon(volumeInput.text.toDoubleOrNull() ?: 0.0)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA07A))
-        ) {
-            Text("Convert")
-        }
-        Spacer(Modifier.height(8.dp))
-        ConversionField(
-            label = "Gallon",
-            textFieldValue = TextFieldValue(volumeOutput),
-            onValueChange = {},
-            readOnly = true
-        )
-    }
-}
-
-@Composable
-fun ConversionField(
-    label: String,
-    textFieldValue: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    readOnly: Boolean = false
-) {
-    OutlinedTextField(
-        value = textFieldValue,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        readOnly = readOnly
+    val conversions = listOf(
+        "Kilograms to Pounds",
+        "Pounds to Kilograms",
+        "Liters to Gallons",
+        "Gallons to Liters"
     )
-}
 
-fun convertLiterToGallon(liter: Double): String {
-    val gallon = liter * 0.264172
-    return "%.5f".format(gallon)
-}
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextField(
+                    value = inputValue,
+                    onValueChange = { inputValue = it },
+                    label = { Text("Enter value") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                conversions.forEach { conversion ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedConversion == conversion,
+                            onClick = { selectedConversion = conversion }
+                        )
+                        Text(text = conversion)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        if (inputValue.isNotEmpty()) {
+                            result = when (selectedConversion) {
+                                "Kilograms to Pounds" -> "${inputValue.toDouble() * 2.20462} lbs"
+                                "Pounds to Kilograms" -> "${inputValue.toDouble() / 2.20462} kg"
+                                "Liters to Gallons" -> "${inputValue.toDouble() / 3.78541} gal"
+                                "Gallons to Liters" -> "${inputValue.toDouble() * 3.78541} L"
+                                else -> ""
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "Convert",
+                        fontFamily = FontFamily.Serif
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = result)
+            }
+        }
+    }
+
 
 @Preview(showBackground = true)
 @Composable
-fun ConversionScreenPreview() {
+fun ConversorPreview() {
     RoseBakeryAppTheme {
         ConversionScreen()
     }

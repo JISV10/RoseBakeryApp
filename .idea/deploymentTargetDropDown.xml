@@ -5,7 +5,13 @@
       <entry key="PreviewNoteList">
         <State />
       </entry>
+      <entry key="PreviewRecipeList">
+        <State />
+      </entry>
       <entry key="RecipeListPreview">
+        <State />
+      </entry>
+      <entry key="TimerScreenPreview">
         <State />
       </entry>
       <entry key="app">

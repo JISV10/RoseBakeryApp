@@ -3,6 +3,9 @@ package com.example.rosebakeryapp
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -53,7 +56,7 @@ fun RecipeView(navController: NavController, recipe: Recipe) {
                     }
                 }
             )
-            //screen content
+            // Contenido de la pantalla
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -70,8 +73,9 @@ fun RecipeView(navController: NavController, recipe: Recipe) {
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Ingredients"
-                    , style = MaterialTheme.typography.headlineMedium,
+                Text(
+                    text = "Ingredients",
+                    style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -80,23 +84,29 @@ fun RecipeView(navController: NavController, recipe: Recipe) {
                     text = recipe.ingredients,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Start,
-                       modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Instructions",
-                     style = MaterialTheme.typography.headlineMedium,
-                     textAlign = TextAlign.Start,
-                     modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = recipe.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "Instructions",
+                    style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
-
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    item {
+                        Text(
+                            text = recipe.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                }
             }
         }
     }
@@ -136,4 +146,3 @@ fun RecipeViewPreview() {
         )
     )
 }
-

@@ -11,10 +11,12 @@
       <entry key="RecipeListPreview">
         <State />
       </entry>
+      <entry key="RecipeViewPreview">
+        <State />
+      </entry>
       <entry key="TimerScreenPreview">
         <State />
       </entry>
-
       <entry key="app">
         <State />
       </entry>

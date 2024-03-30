@@ -3,6 +3,7 @@ package com.example.rosebakeryapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -15,6 +16,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +40,6 @@ fun ConversionScreen() {
     var inputValue by remember { mutableStateOf("") }
     var selectedConversion by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
-
     val conversions = listOf(
         "Kilograms to Pounds",
         "Pounds to Kilograms",
@@ -48,7 +49,9 @@ fun ConversionScreen() {
 
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
             Column(

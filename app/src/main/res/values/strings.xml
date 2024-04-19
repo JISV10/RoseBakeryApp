@@ -2,5 +2,5 @@
     <string name="app_name">RoseBakeryApp</string>
     <string name="top_bar">Rose Bakery</string>
     <string name="new_shopping_list">Shop a Recipe</string>
-    <string name="create_shopping_list">Create a Recipe</string>
+    <string name="create_shopping_list">Create a Shopping list</string>
 </resources>

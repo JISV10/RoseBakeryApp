@@ -23,55 +23,53 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.rosebakeryapp.ui.theme.RoseBakeryAppTheme
+
 
 class ShoppingLists : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             RoseBakeryAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    ShoppingList()
-                }
+                val navController = rememberNavController()
+                ShoppingList(navController = navController)
             }
         }
     }
 }
 
 @Composable
-fun ShoppingList( modifier: Modifier = Modifier) {
+fun ShoppingList(modifier: Modifier = Modifier, navController: NavController) {
     val salmonPink = colorResource(id = R.color.salmon_pink)
-    Column (modifier = Modifier.fillMaxSize(),
+    Column (modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("shopRecipe") },
             modifier = Modifier
                 .padding(30.dp)
                 .size(width = 250.dp, height = 80.dp),
             colors = ButtonDefaults.buttonColors(containerColor = salmonPink)
 
         ) {
-
             Text(
                 stringResource(id = R.string.new_shopping_list),
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
             )
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("newShoppingList") },
             modifier = Modifier
                 .padding(35.dp)
                 .size(width = 250.dp, height = 80.dp),
             colors = ButtonDefaults.buttonColors(containerColor = salmonPink)
 
         ) {
-
             Text(
                 stringResource(id = R.string.create_shopping_list),
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -84,6 +82,7 @@ fun ShoppingList( modifier: Modifier = Modifier) {
 @Composable
 fun ShoppingListPreview() {
     RoseBakeryAppTheme {
-        ShoppingList()
+        val navController = rememberNavController()
+        ShoppingList(navController = navController)
     }
 }

@@ -53,9 +53,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController = navController, startDestination = "main") {
                         composable("main") { MainScreen(navController) }
-                        composable("shoppingList") { ShopARecipe() }
+                        composable("shoppingList") { ShoppingList(navController = navController) }
                         composable("timer") { TimerScreen() }
                         composable("recipeList") { RecipeListScreen(navController) }
+                        composable("newShoppingList") { NewShoppingList() }
+                        composable("shopRecipe") { ShopARecipe() }
                         composable(
                             "recipeView/{recipeId}",
                             arguments = listOf(navArgument("recipeId") { type = NavType.StringType })

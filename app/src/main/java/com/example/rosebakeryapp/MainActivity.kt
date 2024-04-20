@@ -162,23 +162,24 @@ fun MainScreen(navController: NavController? = null) {
 fun RoseTopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
         title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
 
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.roselogoround),
-                    contentDescription = null,
-                    modifier = Modifier.size(40.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = stringResource(id = R.string.top_bar),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Cursive
-                )
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.roselogoround),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = stringResource(id = R.string.top_bar),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Cursive
+                    )
+                }
         },
         modifier = modifier
     )

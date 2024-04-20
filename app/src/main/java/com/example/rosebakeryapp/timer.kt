@@ -3,6 +3,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.magnifier
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -27,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +41,7 @@ class TimerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RoseBakeryAppTheme {
+
                 // A surface container using the 'background' color from the theme
                 TimerScreen()
             }
@@ -45,6 +50,7 @@ class TimerActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimerScreen() {
     var durationInput by remember { mutableStateOf("") }
@@ -74,84 +80,87 @@ fun TimerScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Timer",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+        Column {
 
-            OutlinedTextField(
-                value = durationInput,
-                onValueChange = { durationInput = it },
-                label = { Text("Enter duration in minutes") },
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
 
-            Button(
-                onClick = {
-                    if (isTimerRunning) {
-                        // Stop the timer
-                        timerState.cancel()
-                        isTimerRunning = false
-                    } else {
-                        // Start the timer
-                        val duration = durationInput.toLongOrNull() ?: 0
-                        totalDuration = duration * 60000L
-                        timeLeft = totalDuration
-                        isTimerRunning = true
-                        timerState.start()
-                    }
-                },
+            RoseTopAppBar()
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF9968D),
-                    contentColor = Color.White
-                )
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(64.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(if (isTimerRunning) "Stop" else "Start")
-            }
-
-            val progress = remember(timeLeft, totalDuration) {
-                if (totalDuration > 0) {
-                    timeLeft.toFloat() / totalDuration.toFloat()
-                } else {
-                    0f
-                }
-            }
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(top = 16.dp)
-            ) {
-                CircularProgressIndicator(
-                    progress = progress,
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFFF9968D),
-                    strokeWidth = 16.dp
-                )
-
-                val minutes = (timeLeft / 1000) / 60
-                val seconds = (timeLeft / 1000) % 60
-                val timeLeftFormatted = String.format("%02d:%02d", minutes, seconds)
-
                 Text(
-                    text = timeLeftFormatted,
+                    text = "Timer",
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
+
+                OutlinedTextField(
+                    value = durationInput,
+                    onValueChange = { durationInput = it },
+                    label = { Text("Enter duration in minutes") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.padding(bottom = 16.dp),
+
+                )
+
+                Button(
+                    onClick = {
+                        if (isTimerRunning) {
+                            // Stop the timer
+                            timerState.cancel()
+                            isTimerRunning = false
+                        } else {
+                            // Start the timer
+                            val duration = durationInput.toLongOrNull() ?: 0
+                            totalDuration = duration * 60000L
+                            timeLeft = totalDuration
+                            isTimerRunning = true
+                            timerState.start()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+
+                    ) {
+                    Text(if (isTimerRunning) "Stop" else "Start")
+                }
+
+                val progress = remember(timeLeft, totalDuration) {
+                    if (totalDuration > 0) {
+                        timeLeft.toFloat() / totalDuration.toFloat()
+                    } else {
+                        0f
+                    }
+                }
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(top = 16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        progress = progress,
+                        modifier = Modifier.fillMaxSize(),
+                        strokeWidth = 16.dp
+                    )
+
+                    val minutes = (timeLeft / 1000) / 60
+                    val seconds = (timeLeft / 1000) % 60
+                    val timeLeftFormatted = String.format("%02d:%02d", minutes, seconds)
+
+                    Text(
+                        text = timeLeftFormatted,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

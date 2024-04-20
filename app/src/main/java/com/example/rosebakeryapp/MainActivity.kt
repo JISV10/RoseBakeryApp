@@ -45,11 +45,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RoseBakeryAppTheme {
-                val salmonPink = colorResource(id = R.color.salmon_pink)
+
                 val navController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = salmonPink
+
                 ) {
                     NavHost(navController = navController, startDestination = "main") {
                         composable("main") { MainScreen(navController) }

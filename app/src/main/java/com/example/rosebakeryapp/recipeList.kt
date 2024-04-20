@@ -11,31 +11,24 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rosebakeryapp.Data.Recipe
+import com.example.rosebakeryapp.Data.RecipeViewModel
 
-// Assuming Recipe data class is defined elsewhere and available here
-// If not, ensure to define it based on your application's requirements
-data class Recipe(
-    val id: String,
-    val title: String,
-    val description: String,
-    val image: Painter,
-    val ingredients: String
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeListScreen(navController: NavController) {
-    val recipes = sampleRecipes() // Function to provide sample recipes, defined below
+    val viewModel: RecipeViewModel = viewModel()
+    val recipes by viewModel.recipes.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
@@ -53,16 +46,36 @@ fun RecipeListScreen(navController: NavController) {
             recipes = recipes,
             modifier = Modifier.padding(padding),
             onDeleteRecipeClick = { /* Handle delete */ },
-            onEditRecipeClick = { /* Handle edit */ },
-            onItemClick = { recipeId ->
-                navController.navigate("recipeView/$recipeId")
-            }
-        )
+            onEditRecipeClick = { /* Handle edit */ }
+        ) { recipeId ->
+            navController.navigate("recipeView/$recipeId")
+        }
     }
 }
 
+
+
 @Composable
+//fun RecipeList(
+//    recipes: com.example.rosebakeryapp.Data.Recipe,
+//    modifier: Modifier = Modifier,
+//    onDeleteRecipeClick: (String) -> Unit,
+//    onEditRecipeClick: (Recipe) -> Unit,
+//    onItemClick: (String) -> Unit
+//) {
+//    LazyColumn(modifier = modifier) {
+//        items(recipes) { recipe ->
+//            RecipeItem(
+//                recipe = recipe,
+//                onDeleteClick = onDeleteRecipeClick,
+//                onEditClick = onEditRecipeClick,
+//                onItemClick = onItemClick
+//            )
+//        }
+//    }
+//}
 fun RecipeList(
+
     recipes: List<Recipe>,
     modifier: Modifier = Modifier,
     onDeleteRecipeClick: (String) -> Unit,
@@ -108,7 +121,7 @@ fun RecipeItem(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Image(
-                painter = recipe.image,
+                painter = painterResource(id = recipe.imageUrl),
                 contentDescription = recipe.title,
                 contentScale = ContentScale.Crop, // Adjust as necessary
                 modifier = Modifier
@@ -129,14 +142,14 @@ fun RecipeItem(
 }
 
 // Sample data provider function for demonstration
-@Composable
-fun sampleRecipes(): List<Recipe> {
-    return listOf(
-        Recipe("1", "Brownie", "Delicious chocolate brownie", painterResource(id = R.drawable.brownie), ""),
-        Recipe("2", "Carrot Cake", "Healthy carrot cake", painterResource(id = R.drawable.carrot_cake), ""),
-        Recipe("3", "Sweet Almond", "Sweet almond pastry", painterResource(id = R.drawable.sweet_almond), "")
-    )
-}
+//@Composable
+//fun sampleRecipes(): List<Recipe> {
+//    return listOf(
+//        Recipe("1", "Brownie", "Delicious chocolate brownie", painterResource(id = R.drawable.brownie), ""),
+//        Recipe("2", "Carrot Cake", "Healthy carrot cake", painterResource(id = R.drawable.carrot_cake), ""),
+//        Recipe("3", "Sweet Almond", "Sweet almond pastry", painterResource(id = R.drawable.sweet_almond), "")
+//    )
+//}
 
 // Preview of RecipeListScreen
 @Preview(showBackground = true)

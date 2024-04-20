@@ -25,12 +25,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.rosebakeryapp.Data.Recipe
+import com.example.rosebakeryapp.Data.RecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun RecipeView(navController: NavController, recipeId: String) {
-    val recipe = fetchRecipeById(recipeId)
+fun RecipeView(navController: NavController,
+               recipeId: String,
+               viewModel: RecipeViewModel = viewModel()
+) {
+    //val recipe = fetchRecipeById(recipeId)
+    val recipe by viewModel.getRecipeById(recipeId).observeAsState(initial = null)
     Surface(color = Color.White) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -109,6 +115,9 @@ fun RecipeView(navController: NavController, recipeId: String) {
             }
         }
     }
+}
+
+
 }
 
 @Composable

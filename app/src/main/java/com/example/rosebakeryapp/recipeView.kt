@@ -31,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun RecipeView(navController: NavController, recipeId: String) {
     val recipe = fetchRecipeById(recipeId)
-    Surface(color = Color.White) {
+    Surface() {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top

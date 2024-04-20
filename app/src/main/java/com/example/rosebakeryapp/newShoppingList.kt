@@ -72,6 +72,7 @@ fun NewShoppingList( modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
+                .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

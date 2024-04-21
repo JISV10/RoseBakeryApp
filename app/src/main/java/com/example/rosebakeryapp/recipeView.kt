@@ -31,6 +31,7 @@ import com.example.rosebakeryapp.Data.RecipeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
+
 fun RecipeView(navController: NavController,
                recipeId: String,
                viewModel: RecipeViewModel = viewModel()
@@ -38,6 +39,8 @@ fun RecipeView(navController: NavController,
     //val recipe = fetchRecipeById(recipeId)
     val recipe by viewModel.getRecipeById(recipeId).observeAsState(initial = null)
     Surface(color = Color.White) {
+
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top

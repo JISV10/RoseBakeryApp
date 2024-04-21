@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -110,10 +111,20 @@ fun RecipeItem(
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = recipe.title,
-                style = MaterialTheme.typography.titleLarge
-            )
+
+            Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically
+                , modifier = Modifier.fillMaxWidth().fillMaxSize()) {
+                Text(
+                    text = recipe.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.weight(1f))
+                IconButton(onClick = { onEditClick(recipe) }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                }
+                IconButton(onClick = { onDeleteClick(recipe.id) }) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete")
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = recipe.description,
@@ -129,14 +140,7 @@ fun RecipeItem(
                     .height(150.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                IconButton(onClick = { onEditClick(recipe) }) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                }
-                IconButton(onClick = { onDeleteClick(recipe.id) }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                }
-            }
+           
         }
     }
 }

@@ -36,17 +36,12 @@ class ConversorActivity : ComponentActivity() {
 
 @Composable
 fun ConversionScreen() {
-    val salmonPink = colorResource(id = R.color.salmon_pink)
     var inputValue by remember { mutableStateOf("") }
-    var selectedConversion by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
-    val conversions = listOf(
-        "Kilograms to Pounds",
-        "Pounds to Kilograms",
-        "Liters to Gallons",
-        "Gallons to Liters"
-    )
+    var selectedConversion by remember { mutableStateOf("") }
 
+    Column(modifier = Modifier.fillMaxSize()) {
+        RoseTopAppBar()
 
         Box(
             modifier = Modifier
@@ -54,64 +49,121 @@ fun ConversionScreen() {
                 .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TextField(
-                    value = inputValue,
-                    onValueChange = { inputValue = it },
-                    label = { Text("Enter value") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                conversions.forEach { conversion ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = selectedConversion == conversion,
-                            onClick = { selectedConversion = conversion }
-                        )
-                        Text(text = conversion)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        if (inputValue.isNotEmpty()) {
-                            result = when (selectedConversion) {
-                                "Kilograms to Pounds" -> "${inputValue.toDouble() * 2.20462} lbs"
-                                "Pounds to Kilograms" -> "${inputValue.toDouble() / 2.20462} kg"
-                                "Liters to Gallons" -> "${inputValue.toDouble() / 3.78541} gal"
-                                "Gallons to Liters" -> "${inputValue.toDouble() * 3.78541} L"
-                                else -> ""
-                            }
+            ConversionContent(
+                inputValue = inputValue,
+                onInputValueChanged = { inputValue = it },
+                selectedConversion = selectedConversion,
+                onConversionSelected = { selectedConversion = it },
+                onConvertClicked = {
+                    if (inputValue.isNotEmpty()) {
+                        result = when (selectedConversion) {
+                            "Kilograms to Pounds" -> "${inputValue.toDouble() * 2.20462} lbs"
+                            "Pounds to Kilograms" -> "${inputValue.toDouble() / 2.20462} kg"
+                            "Liters to Gallons" -> "${inputValue.toDouble() / 3.78541} gal"
+                            "Gallons to Liters" -> "${inputValue.toDouble() * 3.78541} L"
+                            else -> ""
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text(
-                        text = "Convert",
-                        fontFamily = FontFamily.Serif
-                    )
-                }
+                    }
+                },
+                result = result
+            )
+        }
+    }
+}
 
-                Spacer(modifier = Modifier.height(16.dp))
+@Composable
+fun ConversionContent(
+    inputValue: String,
+    onInputValueChanged: (String) -> Unit,
+    selectedConversion: String,
+    onConversionSelected: (String) -> Unit,
+    onConvertClicked: () -> Unit,
+    result: String
+) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(
+            value = inputValue,
+            onValueChange = onInputValueChanged,
+            label = { Text("Enter value") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
 
-                Text(text = result)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        ConversionsList(
+            conversions = listOf(
+                "Kilograms to Pounds",
+                "Pounds to Kilograms",
+                "Liters to Gallons",
+                "Gallons to Liters"
+            ),
+            selectedConversion = selectedConversion,
+            onConversionSelected = onConversionSelected
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onConvertClicked,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .height(100.dp)
+                .padding(vertical = 8.dp)
+        ) {
+            Text(
+                text = "Convert",
+                fontFamily = FontFamily.Serif,
+                fontWeight = FontWeight.Bold,
+                fontSize = MaterialTheme.typography.titleMedium.fontSize
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = result,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+    }
+}
+
+@Composable
+fun ConversionsList(
+    conversions: List<String>,
+    selectedConversion: String,
+    onConversionSelected: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 8.dp)
+    ) {
+        Text(
+            text = "Conversions",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+        )
+        conversions.forEach { conversion ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                RadioButton(
+                    selected = selectedConversion == conversion,
+                    onClick = { onConversionSelected(conversion) }
+                )
+                Text(text = conversion)
             }
         }
     }
+}
 
 
 @Preview(showBackground = true)

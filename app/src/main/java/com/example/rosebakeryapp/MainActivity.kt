@@ -45,11 +45,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RoseBakeryAppTheme {
-                val salmonPink = colorResource(id = R.color.salmon_pink)
+
                 val navController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = salmonPink
+
                 ) {
                     NavHost(navController = navController, startDestination = "main") {
                         composable("main") { MainScreen(navController) }
@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController? = null) {
-    val salmonPink = colorResource(id = R.color.salmon_pink)
+
     Scaffold(
         topBar = {
             RoseTopAppBar()
@@ -92,14 +92,15 @@ fun MainScreen(navController: NavController? = null) {
         ) {
             Button(
                 onClick = { navController?.navigate("recipeList") },
-                colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
+
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
+                    .fillMaxWidth(0.5f)
+                    .height(100.dp)
                     .padding(vertical = 8.dp)
             ) {
                 Text("My Recipes",
-                    fontFamily = FontFamily.Serif
+                    fontFamily = FontFamily.Serif,
+                     fontWeight = FontWeight.Bold
                 )
             }
 
@@ -107,14 +108,15 @@ fun MainScreen(navController: NavController? = null) {
 
             Button(
                 onClick = { navController?.navigate("shoppingList") },
-                colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
+
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
+                    .fillMaxWidth(0.5f)
+                    .height(100.dp)
                     .padding(vertical = 8.dp)
             ) {
                 Text("Shopping List",
-                    fontFamily = FontFamily.Serif
+                    fontFamily = FontFamily.Serif,
+                     fontWeight = FontWeight.Bold
                 )
             }
 
@@ -122,14 +124,16 @@ fun MainScreen(navController: NavController? = null) {
 
             Button(
                 onClick = { navController?.navigate("timer") },
-                colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
+
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
+                    .fillMaxWidth(0.5f)
+                    .height(100.dp)
                     .padding(vertical = 8.dp)
             ) {
                 Text("Timer",
-                    fontFamily = FontFamily.Serif
+                    fontFamily = FontFamily.Serif,
+                     fontWeight = FontWeight.Bold
+
                     )
             }
 
@@ -138,14 +142,15 @@ fun MainScreen(navController: NavController? = null) {
 
             Button(
                 onClick = { navController?.navigate("conversor") },
-                colors = ButtonDefaults.buttonColors(containerColor = salmonPink),
+
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
+                    .fillMaxWidth(0.5f)
+                    .height(100.dp)
                     .padding(vertical = 8.dp)
             ) {
                 Text("Converter",
-                    fontFamily = FontFamily.Serif
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -156,26 +161,25 @@ fun MainScreen(navController: NavController? = null) {
 @Composable
 fun RoseTopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
-
-
         title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
 
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.roselogoround),
-                    contentDescription = null,
-                    modifier = Modifier.size(40.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = stringResource(id = R.string.top_bar),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Cursive
-                )
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.roselogoround),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = stringResource(id = R.string.top_bar),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Cursive
+                    )
+                }
         },
         modifier = modifier
     )
